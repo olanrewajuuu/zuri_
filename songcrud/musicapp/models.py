@@ -10,11 +10,11 @@ class Artist(models.Model):
 
 class Song(models.Model):
     title = models.CharField(max_length=50)
-    date_released = models.DateField
-    likes = models.ImageField
-    artiste_id = models.ForeignKey(Artist,on_delete=models.CASCADE)
+    date_released = models.DateField(blank=True)
+    likes = models.IntegerField(blank=True)
+    artist = models.ForeignKey(Artist,on_delete=models.CASCADE)
 
 
 class Lyric(models.Model):
     content = models.TextField()
-    song_id = models.ForeignKey(Song,on_delete=models.CASCADE)
+    song = models.OneToOneField(Song,on_delete=models.CASCADE,primary_key=True)
