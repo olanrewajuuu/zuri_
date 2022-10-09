@@ -1,7 +1,6 @@
-from dataclasses import field, fields
 from rest_framework import serializers
 
-from musicapp.models import Lyric, Song, Artist
+from musicapp.models import Artist, Lyric, Song
 
 
 class LyricSerializer(serializers.Serializer):
@@ -14,21 +13,27 @@ class LyricSerializer(serializers.Serializer):
 
 class SongSerializer(serializers.ModelSerializer):
 
-    lyric = LyricSerializer(many=False)
+    artist = serializers.SlugRelatedField(
+        slug_field='first_name',
+        queryset=Artist.objects.all(),
+        many=False,
+    )
 
     class Meta:
         model = Song
         fields = [
             'title',
+            'artist',
             'date_released',
             'likes',
-            'artist',
-            'lyric'
-            ]
+        ]
 
 class ArtistSerializer(serializers.ModelSerializer):
     
-    songs = SongSerializer(many=True)
+    songs = serializers.StringRelatedField(
+        many=True,
+        read_only=True
+    )
 
     class Meta:
         model = Artist
@@ -36,5 +41,5 @@ class ArtistSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'age',
-            'songs'
+            'songs',
         ]
