@@ -1,32 +1,23 @@
 from rest_framework import serializers
 
-from musicapp.models import Artist, Lyric, Song
+from musicapp.models import Artist, Lyrics, Song
 
 
-class LyricSerializer(serializers.Serializer):
+class LyricsSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = Lyric
-        fields = [
-            'content'
-        ]
-
-class SongSerializer(serializers.ModelSerializer):
-
-    artist = serializers.SlugRelatedField(
-        slug_field='first_name',
-        queryset=Artist.objects.all(),
+    song = serializers.PrimaryKeyRelatedField(
+        queryset=Song.objects.all(),
         many=False,
+        write_only=True
     )
 
     class Meta:
-        model = Song
+        model = Lyrics
         fields = [
-            'title',
-            'artist',
-            'date_released',
-            'likes',
+            'song',
+            'content'
         ]
+
 
 class ArtistSerializer(serializers.ModelSerializer):
     
@@ -42,4 +33,23 @@ class ArtistSerializer(serializers.ModelSerializer):
             'last_name',
             'age',
             'songs',
+        ]
+
+class SongSerializer(serializers.ModelSerializer):
+
+    # artist = serializers.PrimaryKeyRelatedField(
+    #     queryset=Artist.objects.all(),
+    #     many=False,
+    # )
+
+    lyrics = LyricsSerializer(read_only=True)
+
+    class Meta:
+        model = Song
+        fields = [
+            'title',
+            'artist',
+            'date_released',
+            'likes',
+            'lyrics'
         ]

@@ -10,15 +10,12 @@ class Artist(models.Model):
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
 
-    # @property
-    # def artist_fullname(self) -> str:
-    #     return f'{self.first_name} {self.last_name}'
-
 
 class Song(models.Model):
-    title = models.CharField(max_length=50)
-    date_released = models.DateField()
+    title = models.CharField(max_length=50,default='No Title')
+    date_released = models.DateField(blank=True)
     likes = models.IntegerField(null=True)
+
     artist = models.ForeignKey(
         Artist,
         on_delete=models.CASCADE,
@@ -29,8 +26,9 @@ class Song(models.Model):
         return f'{self.title}'
 
 
-class Lyric(models.Model):
-    content = models.TextField()
+class Lyrics(models.Model):
+    content = models.TextField(blank=True,editable=True)
+
     song = models.OneToOneField(
         Song,
         on_delete=models.CASCADE,
